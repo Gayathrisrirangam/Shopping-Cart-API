@@ -9,7 +9,7 @@ namespace Shopping_Cart_API.Services
 {
     public class UserDetailsServices
     {
-        private IUser _userDetailsRepository;
+        public IUser _userDetailsRepository;
 
         public UserDetailsServices(IUser userDetailsRepository )
         {
@@ -39,9 +39,7 @@ namespace Shopping_Cart_API.Services
         public UserDetailsT GetUserbyEmail(string EmailId)
         {
             return _userDetailsRepository.GetUserbyEmail(EmailId);
-        }
-
-        
+        }        
 
     }
 }

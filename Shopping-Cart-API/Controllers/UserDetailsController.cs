@@ -81,7 +81,8 @@ namespace Shopping_Cart_API.Controllers
         [HttpPost("RegisterUser")]
         public IActionResult SaveUserDetails(UserDetailsT userDetails)
         {
-            return Ok(_userDetailsServices.SaveUserDetails(userDetails));
+            _userDetailsServices.SaveUserDetails(userDetails);
+            return Ok(new { Message = "Registration Successfull" });
         }
         #endregion
 
@@ -120,7 +121,11 @@ namespace Shopping_Cart_API.Controllers
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var securityToken = tokenHandler.CreateToken(tokenDescriptor);
                 var token = tokenHandler.WriteToken(securityToken);
-                return Ok(new { token });
+                return Ok(new { 
+                    token,
+                    Message=
+                    "Login successful"
+                } );
                 //return Ok("Login Successful");
             }
             else

@@ -13,6 +13,6 @@ namespace Shopping_Cart_API.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int UserId { get; set; }
         public string Username { get; set; }
-        public string Feedback { get; set; }
+        public string Feedback { get; set; }    
     }
 }

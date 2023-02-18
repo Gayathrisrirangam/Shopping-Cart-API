@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
@@ -46,35 +47,39 @@ namespace Shopping_Cart_API
 
             //User
             services.AddTransient<IUser, UserRepo>();
-            services.AddTransient<UserDetailsServices, UserDetailsServices>();    
-            
+            services.AddTransient<UserDetailsServices, UserDetailsServices>();
+
             //Product
-          //  services.AddTransient<IProduct, ProductRepo>();
-           // services.AddTransient<ProductService, ProductService>(); 
-            
-            //Cart
-         //   services.AddTransient<ICart, CartRepo>();
-           // services.AddTransient<CartService, CartService>(); 
-            
-            //order
-         //   services.AddTransient<IOrder, OrderRepo>();
-         //   services.AddTransient<OrderService, OrderService>(); 
-            
+            services.AddTransient<IProduct, ProductRepo>();
+            services.AddTransient<ProductService, ProductService>();
+
             //Payment
-          //  services.AddTransient<IPayment, PaymentRepo>();
-          //  services.AddTransient<PaymentService, PaymentService>(); 
-            
-            //Address
-         //   services.AddTransient<IAddress, AddressRepo>();
-          //  services.AddTransient<AddressService, AddressService>(); 
-            
+            services.AddTransient<IPayment, PaymentRepo>();
+            services.AddTransient<PaymentServices,PaymentServices>();
+
+            //Cart
+            services.AddTransient<ICart,CartRepo>();
+            services.AddTransient<CartServices,CartServices>();
+
+            //Order
+            services.AddTransient<IOrder,OrderRepo>();
+            services.AddTransient<OrderServices,OrderServices>();
+
             //Feedback
-         //   services.AddTransient<IFeedBack, FeedBackRepo>();
-          //  services.AddTransient<FeedbackService, FeedbackService>();
+            services.AddTransient<IFeedBack,FeedBackRepo>();
+            services.AddTransient<FeedBackServices,FeedBackServices>();
 
-            #endregion
+            //Address
+            services.AddTransient<IAddress,AddressRepo>();
+            services.AddTransient<AddressServices,AddressServices>();
+
+            services.AddCors(option => option.AddPolicy("MyPolicy", builder =>
+            {
+                builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+            }));
+
+            #endregion
         }
-
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -87,8 +92,10 @@ namespace Shopping_Cart_API
             }
 
             app.UseRouting();
-
+            app.UseCors("MyPolicy");
+            app.UseAuthentication();
             app.UseAuthorization();
+            
 
             app.UseEndpoints(endpoints =>
             {
