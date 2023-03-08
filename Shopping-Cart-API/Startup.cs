@@ -73,9 +73,9 @@ namespace Shopping_Cart_API
             services.AddTransient<IAddress,AddressRepo>();
             services.AddTransient<AddressServices,AddressServices>();
 
-            services.AddCors(option => option.AddPolicy("MyPolicy", builder =>
+            services.AddCors(option => option.AddPolicy("MyPolicy", ApplicationBuilder =>
             {
-                builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+                ApplicationBuilder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
             }));
 
             #endregion

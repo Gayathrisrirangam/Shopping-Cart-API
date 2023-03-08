@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using MimeKit;
+using MimeKit.Text;
 using Shopping_Cart_API.Models;
 using Shopping_Cart_API.Repository;
 using Shopping_Cart_API.Services;
@@ -8,9 +10,13 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Net.Mail;
+using MailKit.Net.Smtp;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using SmtpClient = MailKit.Net.Smtp.SmtpClient;
 
 namespace Shopping_Cart_API.Controllers
 {
@@ -122,6 +128,7 @@ namespace Shopping_Cart_API.Controllers
                 var securityToken = tokenHandler.CreateToken(tokenDescriptor);
                 var token = tokenHandler.WriteToken(securityToken);
                 return Ok(new { 
+                 
                     token,
                     Message=
                     "Login successful"
@@ -134,6 +141,32 @@ namespace Shopping_Cart_API.Controllers
             }
 
 
+        }
+        #endregion
+
+        #region EmailService
+        [HttpGet("EmailService")]
+
+        public IActionResult SendEmail(string name, string receiver)
+        {
+            string body = "Thanks " + name + "!\n\n Your email id " + receiver + " is succesfully registered with" +
+                " PACT \n\n Regards,\n PACT Ltd.\n Contact us: pact.onlineshop0311@gmail.com";
+            var email = new MimeMessage();
+
+            email.From.Add(MailboxAddress.Parse("pact.onlineshop0311@gmail.com"));
+            email.To.Add(MailboxAddress.Parse(receiver));
+            email.Subject = "Registration comfirmation mail-PACT";
+            email.Body = new TextPart(TextFormat.Plain) { Text = body };
+           
+            using var smtp = new SmtpClient();
+
+            smtp.Connect("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
+
+            smtp.Authenticate("pact.onlineshop0311@gmail.com", "tqpdurmiwakwlrev"); //email and password
+            smtp.Send(email);
+            smtp.Disconnect(true);
+
+            return Ok("200");
         }
         #endregion
 
